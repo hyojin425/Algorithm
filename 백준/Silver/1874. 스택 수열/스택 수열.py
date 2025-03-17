@@ -1,22 +1,28 @@
+import sys
+from collections import deque
+input = sys.stdin.readline
+    
 n = int(input())
-stack, result  = [], []
-find = True
-cnt = 1
 
-for _ in range(n):
-    num = int(input())
-    while cnt <= num:
-        stack.append(cnt)
+arr = []
+for i in range(n):
+    arr.append(int(input()))
+    
+cnt = 1
+stack = []
+result = []
+for a in arr:
+    while cnt <= a:
         result.append("+")
+        stack.append(cnt)
         cnt += 1
-    if stack[-1] == num:
-        stack.pop()
+        
+    if stack.pop() == a:
         result.append("-")
     else:
-        find = False
+        print("NO")
+        exit()
 
-if find:
-    for r in result:
-        print(r)
-else:
-    print("NO")
+for r in result:
+    print(r)
+    
