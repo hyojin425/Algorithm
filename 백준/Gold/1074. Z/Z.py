@@ -24,4 +24,7 @@ def dfs(r, c, size, n):
         dfs(r - size, c - size, size, n + (size ** 2) * 3)
     
         
+
 dfs(r, c, 2 ** n, 0)
+
+
