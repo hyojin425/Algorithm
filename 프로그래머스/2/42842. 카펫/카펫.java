@@ -3,17 +3,11 @@ class Solution {
         int[] answer = new int[2];
         int sum = brown + yellow;
         
-        for (int i = 3; i < sum; i++) {
-            int j = sum / i;
-            
-            if (sum % i == 0 && j >= 3) {
-                int col = Math.max(i, j);
-                int row = Math.min(i, j);
-                int center = (col - 2) * (row - 2);
-                
-                if (center == yellow) {
-                    answer[0] = col;
-                    answer[1] = row;
+        for(int i = 3; i<=sum/3; i++){
+            for(int j = 3; j <= i; j++) {
+                if(i * j == sum && (i - 2) * (j - 2) == yellow) {
+                    answer[0] = i;
+                    answer[1] = j;
                     return answer;
                 }
             }
