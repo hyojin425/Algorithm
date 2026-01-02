@@ -14,13 +14,13 @@ public class Main {
             cost.add(sc.nextInt());
         }
 
-        int answer = 0;
-        int minCost = Integer.MAX_VALUE;
+        long answer = 0;
+        long minCost = Integer.MAX_VALUE;
         for(int i = 0; i < distance.size(); i++) {
             if (minCost > cost.get(i)) {
                 minCost = cost.get(i);
             }
-            answer += distance.get(i) * minCost;
+            answer += (long)distance.get(i) * minCost;
         }
         System.out.println(answer);
     }
