@@ -1,48 +1,51 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+// The main method must be in a class named "Main".
+class Main {
+    public static void solution(int n, int[] arr) {
+        int[] dp = new int[n];
+        int[] prev = new int[n];
+        Arrays.fill(dp, 1);
+        Arrays.fill(prev, -1);
 
-        int[] arr = Arrays.stream(br.readLine().split(" "))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-        ArrayList<ArrayList<Integer>> dp = new ArrayList<>();
+        int max = 1;
+        int lastIdx = 0;
+        for(int i = 1; i< n; i++) {
+            for(int j = i -1; j>= 0; j--) {
+                if(arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j;
+                }
+            }
 
-        for(int i = 0; i < n; i++) {
-            ArrayList<Integer> inner = new ArrayList<>();
-            inner.add(arr[i]);
-            dp.add(inner);
-        }
-
-        for(int i = 1; i < n; i++) {
-              for(int j = 0; j < i; j++) {
-                  if (arr[i] > arr[j]) {
-                      if(dp.get(i).size() < dp.get(j).size() + 1) {
-                          ArrayList<Integer> inner = new ArrayList<>(dp.get(j));
-                          inner.add(arr[i]);
-                          dp.set(i, inner);
-                      }
-                  }
-              }
-        }
-
-        int answer = 0;
-        int idx = 0;
-        for (int i = 0; i < n; i++){
-            if(dp.get(i).size() > answer) {
-                answer = dp.get(i).size();
-                idx = i;
+            if(max < dp[i]) {
+                max = dp[i];
+                lastIdx = i;
             }
         }
 
-        System.out.println(answer);
-        for (int num : dp.get(idx)) {
-            System.out.print(num + " ");
+        Stack<Integer> stack = new Stack<>();
+        while(lastIdx != -1) {
+            stack.push(arr[lastIdx]);
+            lastIdx = prev[lastIdx];
         }
+        
+        System.out.println(max);
+        while(!stack.isEmpty()) {
+            System.out.print(stack.pop() +  " ");
+        }
+        
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        int[] intArr = Arrays.stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+
+        solution(n, intArr);
     }
 }
