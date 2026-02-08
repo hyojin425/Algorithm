@@ -4,57 +4,69 @@ import java.io.*;
 
 // The main method must be in a class named "Main".
 class Main {
-    public static void solution(int n, int target) {
-        Queue<Num> q = new LinkedList<>();
-        int[] visited = new int[10000];
-        visited[n] = 1;
-        q.add(new Num(n, ""));
+    
+    public static String solution(int start, int target) {
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
 
+        int[] ch = new int[10000];
+        ch[start] =1;
+
+        int[] prev = new int[10000];
+        char[] how = new char[10000];
         while(!q.isEmpty()) {
-            Num tmp = q.poll();
-                int num = tmp.num;
-                String op = tmp.op;
-                if(num == target) {
-                    System.out.println(op);
-                    return;
-                }
-                
-                int d = num * 2 % 10000;
-                    if(visited[d] == 0) {
-                         q.add(new Num(d, op + "D"));
-                         visited[d] = 1;
-                    }
-                
-                int s = num == 0 ? 9999 : num - 1;
-                if(visited[s] == 0) {
-                    q.add(new Num(s, op + "S"));
-                    visited[s] = 1;
-                }
+            int cur = q.poll();
 
-                int L = (num % 1000) * 10 + (num / 1000);
-                if(visited[L] == 0) {
-                    q.add(new Num( L, op + "L"));
-                    visited[L] = 1;
-                }
-                int R = (num  % 10) * 1000 + (num / 10);
-                if(visited[R] == 0) {
-                    q.add(new Num(R, op + "R"));
-                    visited[R] = 1;
-                }
+            if(cur == target) break;
+
+            // d
+            int d = cur * 2 % 10000;
+            if(ch[d] == 0) {
+                ch[d] = 1;
+                q.add(d);
+                prev[d] = cur;
+                how[d] = 'D';
+            }
+
+            // s
+            int s = (cur == 0)? 9999 : cur - 1;
+            if(ch[s] == 0) {
+                ch[s] = 1;
+                q.add(s);
+                prev[s] = cur;
+                how[s] = 'S';
+            }
+
+            // l
+            int l = (cur % 1000) * 10 + cur / 1000;
+            if(ch[l] == 0) {
+                ch[l] = 1;
+                q.add(l);
+                prev[l] = cur;
+                how[l] = 'L';
+            }
+
+            // r
+            int r = (cur % 10) * 1000 + cur / 10;
+            if(ch[r] == 0) {
+                ch[r] = 1;
+                q.add(r);
+                prev[r] = cur;
+                how[r] = 'R';
+            }
         }
-        return;
-    }
 
-    public static class Num {
-        int num;
-        String op;
 
-        public Num(int num, String op){
-            this.num = num;
-            this.op = op;
+        StringBuilder sb = new StringBuilder();
+        while(target != start) {
+             sb.append(how[target]);
+            target = prev[target];
         }
-    }
 
+        return sb.reverse().toString();
+
+    }
+    
     public static void main(String[] args) throws IOException  {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine());
@@ -62,7 +74,7 @@ class Main {
             int[] nums = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-            solution(nums[0], nums[1]);
+            System.out.println(solution(nums[0], nums[1]));
         }
     }
 }
