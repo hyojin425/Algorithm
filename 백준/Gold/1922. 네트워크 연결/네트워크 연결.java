@@ -5,48 +5,50 @@ import java.io.*;
 // The main method must be in a class named "Main".
 class Main {
 
-    static List<List<int[]>> graph = new ArrayList<>();
-    static int n;
+    static List<int[]> graph = new ArrayList<>();
+    static int n, m;
+
+    static int[] unf;
+    public static int find(int v) {
+        if(unf[v] == v) return v;
+        else return unf[v] = find(unf[v]);
+    }
+
+    public static void union(int a, int b) {
+        int fa = find(a);
+        int fb = find(b);
+        if(fa != fb) unf[fa] = fb;
+    }
 
     public static int solution(){
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-        pq.add(new int[]{1, 0});
-        
-        int[] ch = new int[n + 1];
-        
-        int answer = 0;
-        while(!pq.isEmpty()) {
-            int[] cur = pq.poll();
+        graph.sort((a, b) -> a[2] - b[2]);
 
-            if(ch[cur[0]] == 0) {
-                ch[cur[0]] = 1;
-                answer += cur[1];
-            }
-            
-            for(int[] next: graph.get(cur[0])) {
-                if(ch[next[0]] == 0) {
-                    pq.add(next);
-                }
+        int answer = 0;
+        for(int i = 0; i < m; i++) {
+            int[] tmp = graph.get(i);
+            if(find(tmp[0]) != find(tmp[1])) {
+                union(tmp[0], tmp[1]);
+                answer += tmp[2];
             }
         }
-
         return answer;
     }
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-        int m = Integer.parseInt(br.readLine());
+        m = Integer.parseInt(br.readLine());
 
+        unf = new int[n + 1];
         for(int i = 0; i <= n; i++) {
-            graph.add(new ArrayList<>());
+            unf[i] = i;
         }
         
         for(int i = 0; i < m; i++) {
             int[] arr = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt)
                 .toArray();
-            graph.get(arr[0]).add(new int[]{arr[1], arr[2]});
-            graph.get(arr[1]).add(new int[]{arr[0], arr[2]});
+            graph.add(new int[]{arr[0], arr[1], arr[2]});
         }
 
         System.out.println(solution());
