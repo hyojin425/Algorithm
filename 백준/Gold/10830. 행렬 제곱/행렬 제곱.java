@@ -7,32 +7,34 @@ class Main {
 
     static int n;
 
-    public static long[][] calculate(long[][] a, long[][] b) {
-        long[][] answer = new long[n][n];
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
-                for(int k = 0; k < n; k++) {
-                    answer[i][j] += a[i][k] * b[k][j];
-                    answer[i][j] %= 1000;
-                }
-            }
-        }
-
-        return answer;
-    }
-
-    public static long[][] pow(long[][] a, long b) {
-        if(b == 1) return a;
-
-        long[][] half = pow(a, b / 2);
-        long[][] result = calculate(half, half);
-
-        if(b % 2 == 1) {
-            result = calculate(result, a);
-        }
+    public static long[][] multiply(long[][] a, long[][] b) {
+    	long[][] result = new long[n][n];
+	
+    	for(int i = 0;  i < n; i++) {
+    		for(int j = 0; j < n; j++) {
+    			for(int k = 0; k < n; k++) {
+    				result[i][j] += a[i][k] * b[k][j];
+    				result[i][j] %= 1000;
+    			}
+    		}
+    	}
 
         return result;
     }
+	
+	
+	public static long[][] pow(long[][] a, long b) {
+		if(b == 1) return a;
+		
+		long[][] half = pow(a, b / 2);
+		long[][] result = multiply(half, half);
+		
+		if(b % 2 == 1) {
+			result = multiply(result, a);
+		}
+		
+		return result;
+	}
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         long[] intArr = Arrays.stream(br.readLine().split(" "))
