@@ -1,3 +1,3 @@
 -- 코드를 입력하세요
-SELECT min(DATETIME)
+SELECT MIN(DATETIME) as '시간'
 from ANIMAL_INS
