@@ -1,87 +1,151 @@
 import java.util.*;
+import java.lang.*;
+import java.io.*;
 
+// The main method must be in a class named "Main".
+class Main {
 
-public class Main {
-    static int n, m = 0;
-    static int[][] graph;
-    static int[][] visited;
-    static int answer;
-    static int[] dx = {0, 1, 0, -1};
-    static int[] dy = {1, 0, -1, 0};
+    public static int solution(int n, int m, int[][] arr) {
+        int answer = Integer.MIN_VALUE;
 
-    public void dfs(int L, int sum, int i, int j) {
-        if (L == 4) {
-            answer = Math.max(answer, sum);
-            return;
-        } else{
-            for(int k = 0; k < 4; k++) {
-                int nx = i + dx[k];
-                int ny = j + dy[k];
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m && visited[nx][ny] == 0) {
-                    visited[nx][ny] = 1;
-                    dfs(L + 1, sum + graph[nx][ny], nx, ny);
-                    visited[nx][ny] = 0;
-                }
+        // 1번
+        for(int i = 0; i < n; i ++) {
+            for(int j = 0; j <= m - 4; j++) {
+                answer = Math.max(answer, arr[i][j] + arr[i][j + 1] + arr[i][j + 2] + arr[i][j + 3]);
             }
         }
-    }
-
-    // 'ㅓ 모양
-    public void solution(int i, int j) {
-        int[][] dx = {
-                {1, 2, 1}, // 'ㅜ'
-                {0, 0, 1}, // 'ㅏ'
-                {-1, 0, 0}, // 'ㅓ'
-                {1, 1, 2}}; // 'ㅗ'
-        int[][] dy = {
-                {0, 0, 1}, // 'ㅜ'
-                {1, 2, 1}, // 'ㅏ'
-                {1, 1, 2}, // 'ㅓ'
-                {0, -1, 0}}; // 'ㅗ'
-
-        for(int k = 0; k<4; k++){
-            int sum = graph[i][j];
-            boolean flag = true;
-            for (int l = 0; l < 3; l++) {
-                int nx = i + dx[k][l];
-                int ny = j + dy[k][l];
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m){
-                    sum += graph[nx][ny];
-                } else {
-                    flag = false;
-                    break;
-                }
-            }
-            if(flag){
-                answer = Math.max(sum, answer);
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        Main t = new Main();
-        Scanner scanner = new Scanner(System.in);
-
-        n  = scanner.nextInt();
-        m = scanner.nextInt();
-        visited = new int[n][m];
-        graph = new int[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                int a = scanner.nextInt();
-                graph[i][j] = a;
+        for(int i = 0; i < m; i ++) {
+            for(int j = 0; j <= n - 4; j++) {
+                answer = Math.max(answer, arr[j][i] + arr[j + 1][i] + arr[j + 2][i] + arr[j + 3][i]);
             }
         }
 
+        // 2번
+        for(int i = 0; i < n - 1; i++) {
+            for(int j = 0; j < m - 1; j++) {
+                answer = Math.max(answer, arr[i][j] + arr[i][j + 1] + arr[i + 1][j] + arr[i+1][j+1]);
+            }
+        }
+
+        int[][] dx = {{0, 1, 2, 2},
+                   {0, 1, 2, 2},
+                   {0, 0, 0, 1},
+                   {0, 1, 0, 0},
+                   {0, 0, 1, 2},
+                   {0, 0, 1, 2},
+                   {0, 1, 1, 1},
+                   {0, 0, 0, -1}};
+        int[][] dy = {{0, 0, 0, 1},
+                   {0, 0, 0, -1},
+                   {0, 1, 2, 2},
+                   {0, 0, 1, 2},
+                   {0, 1, 0, 0},
+                   {0, 1, 1, 1},
+                   {0, 0, 1, 2},
+                   {0, 1, 2, 2}};
+        // 3
         for(int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                visited[i][j] = 1;
-                t.dfs(1, graph[i][j], i, j);
-                visited[i][j] = 0;
-                t.solution(i, j);
+            for(int j = 0; j < m; j++) {
+                for(int k = 0; k < 8; k++) {
+                    int sum = 0;
+                    boolean flag = true;
+                    for(int l = 0; l < 4; l++) {
+                        int nx = i + dx[k][l];
+                        int ny = j + dy[k][l];
+                        if(nx < n && nx >= 0 && ny < m && ny >= 0) {
+                            sum += arr[nx][ny];
+                        } else {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag) {
+                        answer = Math.max(answer, sum);
+                    }
+                }
             }
         }
-        System.out.println(answer);
+
+        // 4
+        int[][] dx1 = {{0, 1, 1, 2},
+                      {0, 1, 1, 2},
+                      {0, 0, -1, -1},
+                      {0, 0, 1, 1}};
+        int[][] dy1 = {{0, 0, 1, 1},
+                      {0, 0, -1, -1},
+                      {0, 1, 1, 2},
+                      {0, 1, 1, 2}};
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                for(int k = 0; k < 4; k++) {
+                    int sum = 0;
+                    boolean flag = true;
+                    for(int l = 0; l < 4; l++) {
+                        int nx = i + dx1[k][l];
+                        int ny = j + dy1[k][l];
+                        if(nx < n && nx >= 0 && ny < m && ny >= 0) {
+                            sum += arr[nx][ny];
+                        } else {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag) {
+                        answer = Math.max(answer, sum);
+                    }
+                }
+            }
+        }
+
+        // 5
+        int[][] dx5 = {{0, 0, 0, 1},
+                       {0, 1, 1, 2},
+                       {0, 0, -1, 0},
+                       {0, -1, 0, 1}};
+        int[][] dy5 = {{0, 1, 2, 1},
+                       {0, 0, 1, 0},
+                       {0, 1, 1, 2},
+                       {0, 1, 1, 1}};
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                for(int k = 0; k < 4; k++) {
+                    int sum = 0;
+                    boolean flag = true;
+                    for(int l = 0; l < 4; l++) {
+                        int nx = i + dx5[k][l];
+                        int ny = j + dy5[k][l];
+                        if(nx < n && nx >= 0 && ny < m && ny >= 0) {
+                            sum += arr[nx][ny];
+                        } else {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag) {
+                        answer = Math.max(answer, sum);
+                    }
+                }
+            }
+        }
+        return answer;
+        
     }
 
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int[] arr = Arrays.stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int n = arr[0];
+        int m = arr[1];
+
+        int[][] arr1 = new int[n][m];
+        for(int i = 0; i <n; i++) {
+            arr1[i] = Arrays.stream(br.readLine().split(" "))
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        }
+
+        System.out.println(solution(n, m, arr1));
+    }
 }
